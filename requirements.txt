@@ -15,8 +15,8 @@ spacy>=3.7.0
 # Healthcare AI Framework
 monai>=1.5.1
 
-# GCP FHIR Integration
-google-cloud-healthcare>=1.11.0
+# GCP FHIR Integration (optional - for FHIR export)
+# google-cloud-healthcare>=1.11.0  # Package doesn't exist
 google-auth>=2.23.0
 requests>=2.31.0
 
