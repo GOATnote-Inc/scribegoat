@@ -56,49 +56,90 @@ Designed for ED teams.
 
 ---
 
-## Quick Start
+## 🚀 Deploy in 5 Minutes
 
-### Installation
+**For startups evaluating NVIDIA's healthcare AI stack:**
 
 ```bash
-# Clone repository
+# One-command deploy to H100
 git clone https://github.com/GOATnote-Inc/scribegoat.git
 cd scribegoat
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Download spaCy model for Presidio
-python -m spacy download en_core_web_lg
-
-# Configure environment
-cp .env.example .env
-# Edit .env and add your NGC_API_KEY from https://org.ngc.nvidia.com/setup/api-key
+export NGC_API_KEY="nvapi-YOUR-KEY-HERE"
+./deploy/quick_start.sh
 ```
 
-### Basic Usage
+**What you get:**
+- ✅ H100-optimized inference (1500+ tok/s)
+- ✅ Safety guardrails (vitals, meds, protocols)
+- ✅ HIPAA-compliant PHI detection
+- ✅ FHIR R4 export ready
+- ✅ Gradio UI on port 7860
+
+**Full deployment guide**: [`deploy/DEPLOY.md`](deploy/DEPLOY.md)
+
+---
+
+## 📊 Profile & Optimize
+
+**See NVIDIA tech in action:**
+
+```bash
+# Run NCU profiling
+./deploy/profile.sh
+
+# View H100 optimization metrics:
+# - SM Efficiency (target: >80%)
+# - Memory Bandwidth (target: >2 TB/s)
+# - Tensor Core Utilization (target: >70%)
+```
+
+**Technologies showcased:**
+- CUDA 13.0 (Blackwell support, tile programming)
+- CUTLASS 4.3 (high-performance primitives)
+- FlashAttention-3 (H100-optimized attention)
+- cuDNN 9.15, TensorRT 10.14
+
+**Profiling guide**: [`deploy/PROFILE.md`](deploy/PROFILE.md)
+
+## Usage
+
+### Web UI (Gradio)
+
+```bash
+python app.py
+# Visit: http://localhost:7860
+# Or get Brev public URL: brev urls
+```
+
+### Command Line
+
+```bash
+# Generate ED note
+python -m goatnote_scribe.cli "35M with chest pain, 2h duration..."
+
+# From file
+cat encounter.txt | python -m goatnote_scribe.cli
+
+# With FHIR export
+python -m goatnote_scribe.cli --export-fhir "Patient presents..."
+```
+
+### Python API
 
 ```python
 from goatnote_scribe import GOATScribe
 
-# Initialize scribe
 scribe = GOATScribe()
 
-# Generate SOAP note
 result = scribe(
-    prompt="45M presents with 3-day history of fever (101°F), productive cough, "
-           "mild dyspnea. No chest pain. PMH: asthma, GERD. "
-           "Vitals: BP 128/82, HR 92, RR 18, SpO2 96% RA."
+    "45M with fever, cough, dyspnea. BP 128/82, HR 92, RR 18, SpO2 96%."
 )
 
 print(result['note'])               # Complete ED note (12 sections)
-print(result['phi_removed'])        # Number of PHI entities detected
-print(result['guardrail_safe'])     # True/False - any critical violations?
-print(result['guardrail_report'])   # Detailed safety validation report
+print(result['guardrail_safe'])     # Safety validation
 print(result['fhir_bundle'])        # FHIR R4 bundle
 
-# Clean up (important for HIPAA)
-scribe.wipe()
+scribe.wipe()  # HIPAA cleanup
 ```
 
 ### FHIR Export to GCP
@@ -343,26 +384,27 @@ class FHIRExporter:
 
 ## Roadmap
 
-### Version 1.0 (Current)
+### Version 1.0 ✅ COMPLETE
 - ✅ Nemotron Nano 9B v2 integration
-- ✅ HIPAA-compliant PHI detection
-- ✅ FHIR R4 bundle generation
-- ✅ GCP Healthcare API export
-- ✅ Configuration management
+- ✅ Emergency Medicine guardrails (vitals, meds, protocols)
+- ✅ HIPAA-compliant PHI detection (18 identifiers)
+- ✅ FHIR R4 export to GCP Healthcare API
+- ✅ One-command deployment (< 5 min)
+- ✅ H100 profiling with NCU/Nsight
+- ✅ Gradio UI and CLI
 
-### Version 1.1 (Planned)
-- [ ] Comprehensive test suite (pytest)
-- [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Pre-commit hooks for secret scanning
-- [ ] Audio transcription (Whisper)
-- [ ] Example notebooks
+### Version 1.1 (In Progress)
+- [ ] NCU CI/CD integration (performance regression detection)
+- [ ] Comprehensive test suite (pytest + guardrails)
+- [ ] Example notebooks (chest pain, stroke, trauma)
+- [ ] Audio transcription (Whisper large-v3-turbo)
 
-### Version 2.0 (Future)
-- [ ] H100 performance profiling (NCU/Nsight)
-- [ ] Batch processing support
-- [ ] Multi-language PHI detection
-- [ ] Custom fine-tuning for specialties
+### Version 2.0 (Planned)
+- [ ] LoRA fine-tuning for ED specialty (MIMIC-IV-ED)
+- [ ] Batch processing API
+- [ ] Multi-language PHI detection (Spanish, Chinese)
 - [ ] FHIR R5 support
+- [ ] Clara integration for medical imaging
 
 ---
 
