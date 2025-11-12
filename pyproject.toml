@@ -36,8 +36,6 @@ dependencies = [
 fhir = [
     "google-cloud-healthcare",  # For FHIR R4 export to GCP
 ]
-
-[project.optional-dependencies]
 audio = [
     "openai-whisper>=20240930",
 ]
