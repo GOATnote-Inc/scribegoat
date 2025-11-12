@@ -55,10 +55,11 @@ The Nov 12 2025 refresh in `latest/monai_h100_summary.csv` uses the same schema 
 
 ### Key Takeaways
 
-- **Two kernels dominate runtime**: an `at::vectorized_elementwise_kernel` accounts for ~80% of GPU time, followed by `vol2col` + `vol2im` data movers. These are PyTorch utility kernels, not tensor-core heavy operators.
-- **Tensor core activity is low (≃0.46% weighted)** because most passes manipulate tensors (scatter/gather, col2im) rather than performing GEMM/conv math. Hopper’s tensor pipelines are underutilised in this configuration.
-- **SM occupancy remains high (~73% weighted), but warp stalls are governed by the long-scoreboard path and memory dependencies**—highlighting opportunities for layout fusion or Triton-based tiling.
-- **Memory traffic skews toward reads** (`dram_read_gb_total` ≫ writes) driven by vol2col patterns; L2 throughput averages 4–5% of peak, so there is headroom for locality improvements.
+- **Data movers dominate runtime**: `vol2col` (39% time share) and `vol2im` (19%) together consume ~58% of GPU time in the Nov 12 2025 run; CUTLASS GEMM/GEMV kernels each contribute <6%.
+- **Tensor core activity remains modest**: top kernels report <7% `tensor_core_active_pct_mean`, so Hopper tensor pipelines stay mostly idle without additional fusion.
+- **Warp stalls are memory-bound**: long-scoreboard and memory-wait ratios exceed 30% for the dominant data movers, signalling load/store constraints.
+- **Read-heavy traffic**: `dram_read_gb_total` outweighs writes, and L2 throughput averages ≈18% of peak for the hottest kernels—leaving tuning headroom.
+
 
 The plots in `plots/` visualise these trends:
 

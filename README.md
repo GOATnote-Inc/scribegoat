@@ -54,22 +54,17 @@ This repository now doubles as a living showcase of NVIDIA’s latest open healt
 **Example**: Catches `"Morphine 50mg IV"` → ⚠️ Exceeds max safe dose (15mg)
 
 ### Core Capabilities
-- **Real-Time Generation**: 6x higher throughput vs comparable models
-- **HIPAA Compliance**: Microsoft Presidio for 18-identifier PHI detection
-- **Audit Transparency**: Toggleable reasoning trails via `/think` token
-- **Extended Context**: 128K tokens for comprehensive ED encounters
-- **FHIR R4**: Standards-compliant healthcare interoperability
-- **Zero-Residue Cleanup**: GPU memory wiping for data security
-- **MONAI Integration**: Healthcare AI framework standard (v1.5.1)
+- **Guardrails validated**: `./deploy/verify.sh` and CLI tests flag unsafe vitals and medication doses (e.g. `morphine 50 mg` → critical violation).
+- **HIPAA PHI detection**: Microsoft Presidio 2.2.360 removes identifiers; smoke tests surface redaction counts in CLI output.
+- **FHIR R4 export**: `FHIRExporter` integration for GCP Healthcare API (see Python API example).
+- **Measured MONAI speedup**: `scripts/monai_h100_benchmark.py` on H100 (CUDA 13.0.2) recorded 3.27 ms baseline vs 1.57 ms optimized (≈2.1×).
+- **Reproducible profiling**: Nsight Compute artefacts live in `docs/benchmarks/ncu/latest/` for transparent kernel analysis.
 
 ### Technical Stack
-- **Model**: NVIDIA Nemotron Nano 9B v2 (October 2025)
-  - Hybrid Mamba-Transformer architecture
-  - 6x throughput improvement
-  - Toggleable reasoning for audit trails
-- **PHI Detection**: Microsoft Presidio 2.2+
-- **FHIR**: GCP Healthcare API with R4 support
-- **Infrastructure**: H100 GPU optimization
+- **Model**: `nvidia/llama-3.1-nemotron-nano-8b-v1` served via NVIDIA NIM (public model as of Nov 2025)
+- **PHI Detection**: Microsoft Presidio 2.2.360 (HIPAA 18-identifier coverage)
+- **FHIR**: GCP Healthcare API (R4 dataset/store helpers)
+- **Infrastructure**: H100 PCIe, CUDA 13.0.2, CUTLASS 4.3.0, FlashAttention 3.0.1
 
 ---
 
@@ -86,7 +81,7 @@ export NGC_API_KEY="nvapi-YOUR-KEY-HERE"
 ```
 
 **What you get:**
-- ✅ H100-optimized inference (1500+ tok/s)
+- ✅ H100 deployment validated via `./deploy/h100_auto_deploy.sh` (Nov 12 2025 smoke test)
 - ✅ Safety guardrails (vitals, meds, protocols)
 - ✅ HIPAA-compliant PHI detection
 - ✅ FHIR R4 export ready
@@ -101,13 +96,8 @@ export NGC_API_KEY="nvapi-YOUR-KEY-HERE"
 **See NVIDIA tech in action:**
 
 ```bash
-# Run NCU profiling
+# Run Nsight profiling (exports to docs/benchmarks/ncu/)
 ./deploy/profile.sh
-
-# View H100 optimization metrics:
-# - SM Efficiency (target: >80%)
-# - Memory Bandwidth (target: >2 TB/s)
-# - Tensor Core Utilization (target: >70%)
 ```
 
 **Technologies showcased:**
@@ -121,7 +111,7 @@ export NGC_API_KEY="nvapi-YOUR-KEY-HERE"
 ### Latest Nsight Dataset (Nov 12 2025)
 - Report: `docs/benchmarks/ncu/latest/ncu_monai_opt_latest.ncu-rep` (MONAI UNet, `torch.compile`, AMP)
 - Summary CSV + plots: `docs/benchmarks/ncu/latest/`
-- Top kernels: `vol2col`/`vol2im` account for ~58% of GPU time; CUTLASS GEMM/GEMV kernels peak around 53% SM occupancy.
+- Top kernels: `vol2col` (39% time) + `vol2im` (19% time) dominate; CUTLASS GEMM/GEMV kernels peak around 53% SM occupancy in this run.
 - Full-metric replay inflates wall-clock time; for quick spot checks run `sudo ncu --set roofline -c 1`.
 - Recreate sanitized artefacts with `python scripts/process_ncu_report.py --raw /tmp/ncu_raw.csv --outdir docs/benchmarks/ncu/<tag>`.
 
