@@ -17,6 +17,7 @@ from presidio_analyzer import AnalyzerEngine, RecognizerResult
 from presidio_anonymizer import AnonymizerEngine
 
 from .config import ScribeConfig
+from .guardrails import EDGuardrails
 
 
 class GOATScribe:
@@ -36,7 +37,7 @@ class GOATScribe:
     
     def __init__(self, config: Optional[ScribeConfig] = None):
         """
-        Initialize GOAT Scribe.
+        Initialize GOAT Scribe for Emergency Medicine.
         
         Args:
             config: Configuration object. If None, loads from environment.
@@ -50,6 +51,16 @@ class GOATScribe:
         self.analyzer = AnalyzerEngine()
         self.anonymizer = AnonymizerEngine()
         self._whisper = None
+        
+        # Initialize ED Guardrails (CRITICAL for safety)
+        if self.config.enable_guardrails:
+            self.guardrails = EDGuardrails(
+                enable_vitals=self.config.validate_vitals,
+                enable_meds=self.config.validate_medications,
+                enable_protocols=self.config.validate_acls_protocols
+            )
+        else:
+            self.guardrails = None
     
     def __call__(
         self,
@@ -97,6 +108,20 @@ class GOATScribe:
         draft = self._generate_draft(deid_prompt)
         final_note = self._critique_draft(draft)
         
+        # CRITICAL: Validate with ED Guardrails
+        guardrail_safe = True
+        guardrail_violations = []
+        guardrail_report = None
+        
+        if self.guardrails:
+            guardrail_safe, guardrail_violations = self.guardrails.validate_note(final_note)
+            guardrail_report = self.guardrails.format_violations(guardrail_violations)
+            
+            if not guardrail_safe:
+                # Log critical violations but still return note (physician must review)
+                print(f"⚠️  WARNING: Guardrail violations detected in generated note")
+                print(guardrail_report)
+        
         # Create FHIR R4 bundle
         fhir_bundle = self._to_fhir(final_note, patient_id)
         
@@ -106,7 +131,10 @@ class GOATScribe:
             "redaction_map": [
                 (r.entity_type, r.start, r.end) for r in phi_results
             ],
-            "fhir_bundle": fhir_bundle
+            "fhir_bundle": fhir_bundle,
+            "guardrail_safe": guardrail_safe,
+            "guardrail_violations": len(guardrail_violations),
+            "guardrail_report": guardrail_report
         }
     
     def _transcribe_audio(self, audio: bytes) -> str:
@@ -118,17 +146,32 @@ class GOATScribe:
         return self._whisper.transcribe(audio)["text"]
     
     def _generate_draft(self, prompt: str) -> str:
-        """Generate initial SOAP note draft"""
+        """Generate initial Emergency Medicine note draft"""
         # Add /think token for transparent reasoning (HIPAA audit trail)
         user_content = f"/think\n{prompt}" if self.config.enable_reasoning else prompt
+        
+        # ED-specific system prompt
+        ed_system_prompt = """Expert Emergency Medicine scribe. Generate comprehensive ED note with:
+
+Structure:
+- Chief Complaint
+- History of Present Illness (onset, location, duration, character, aggravating/relieving factors, timing, severity)
+- Review of Systems (pertinent positives and negatives)
+- Past Medical/Surgical History
+- Medications & Allergies
+- Social History (ETOH, tobacco, drugs)
+- Physical Examination (by system, document all pertinent findings)
+- ED Course & Procedures (chronological, include vitals trends)
+- Labs & Imaging (results with interpretation)
+- Medical Decision Making (differential diagnosis, risk stratification, treatment rationale)
+- Disposition (discharge vs admit, follow-up, return precautions)
+
+Critical: Document time-sensitive decisions, rule-outs for high-risk conditions, and shared decision-making."""
         
         response = self.client.chat.completions.create(
             model=self.config.model_name,
             messages=[
-                {
-                    "role": "system",
-                    "content": "Expert medical scribe. Generate concise SOAP note."
-                },
+                {"role": "system", "content": ed_system_prompt},
                 {"role": "user", "content": user_content}
             ],
             temperature=self.config.temperature,
@@ -137,18 +180,28 @@ class GOATScribe:
         return response.choices[0].message.content
     
     def _critique_draft(self, draft: str) -> str:
-        """Self-critique pass for accuracy and completeness"""
+        """Self-critique pass for Emergency Medicine accuracy"""
+        critique_prompt = f"""Emergency Medicine QA Review. Verify this ED note for:
+
+1. Medical Accuracy: Check vitals, medications, procedures
+2. Completeness: All required ED sections present
+3. High-Risk Rule-Outs: Documented (MI, PE, stroke, sepsis, etc.)
+4. Medical Decision Making: Clear rationale for disposition
+5. Medical-Legal: Return precautions, informed consent documented
+
+Draft:
+{draft}
+
+Provide improved version with any corrections:"""
+        
         response = self.client.chat.completions.create(
             model=self.config.model_name,
             messages=[
                 {
                     "role": "system",
-                    "content": "Medical QA expert. Verify accuracy, fix errors."
+                    "content": "Emergency Medicine attending physician. Expert in ED documentation and medical-legal risk."
                 },
-                {
-                    "role": "user",
-                    "content": f"Draft:\n{draft}\n\nVerify and improve:"
-                }
+                {"role": "user", "content": critique_prompt}
             ],
             temperature=0.0,  # Deterministic for critique
             max_tokens=self.config.max_tokens

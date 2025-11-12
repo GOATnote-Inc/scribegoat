@@ -1,8 +1,8 @@
-"""Configuration management for GOAT Scribe"""
+"""Configuration management for GOAT Scribe - Emergency Medicine Edition"""
 
 import os
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 
 @dataclass
@@ -22,14 +22,44 @@ class ScribeConfig:
     # PHI Detection
     phi_language: str = "en"
     
+    # Emergency Medicine Configuration
+    specialty: str = "emergency_medicine"  # Primary specialty
+    enable_guardrails: bool = True  # NeMo Guardrails for safety (CRITICAL)
+    
+    # ED-Specific Guardrails
+    validate_vitals: bool = True  # Check vital signs are in valid ranges
+    validate_medications: bool = True  # Check drug names/doses
+    validate_acls_protocols: bool = True  # Verify ACLS/trauma protocols
+    
+    # Output Structure
+    ed_note_structure: List[str] = None  # Will be set in __post_init__
+    
+    def __post_init__(self):
+        """Set ED-specific defaults"""
+        if self.ed_note_structure is None:
+            self.ed_note_structure = [
+                "Chief Complaint",
+                "History of Present Illness",
+                "Review of Systems",
+                "Past Medical/Surgical History",
+                "Medications",
+                "Allergies",
+                "Social History",
+                "Physical Examination",
+                "ED Course & Procedures",
+                "Labs & Imaging",
+                "Medical Decision Making",
+                "Disposition"
+            ]
+    
     # FHIR Configuration
     gcp_project_id: str = "scribe-fhir"
     gcp_location: str = "us-central1"
     gcp_dataset: str = "scribe-dataset"
     gcp_fhir_store: str = "scribe-store"
     
-    def __post_init__(self):
-        """Load API key from environment if not provided"""
+        
+        # Load API key
         if self.nim_api_key is None:
             self.nim_api_key = os.getenv("NGC_API_KEY")
             if self.nim_api_key is None:
