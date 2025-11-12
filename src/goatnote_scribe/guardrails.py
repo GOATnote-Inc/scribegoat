@@ -2,9 +2,9 @@
 Emergency Medicine Guardrails for GOAT Scribe
 
 CRITICAL SAFETY LAYER: Prevents medical errors in high-stakes ED environment.
-Built by Emergency Medicine physician for Emergency Medicine physicians.
+For all ED clinicians: physicians, nurses, PAs, NPs, techs, social workers, paramedics.
 
-Author: Brandon Dent, MD - Former Emergency Medicine Clinical Assistant Professor
+Author: Brandon Dent
 """
 
 import re
@@ -25,13 +25,11 @@ class EDGuardrails:
     """
     Emergency Medicine safety guardrails.
     
-    Prevents common medical errors:
-    - Invalid vital signs (e.g., HR 300, BP 300/200)
-    - Wrong medication dosages
-    - Invalid ACLS/trauma protocols
-    - Missing critical documentation
-    
-    This is NOT optional for ED documentation - medical-legal exposure requires it.
+    Validates clinical documentation for:
+    - Vital signs within physiologic ranges
+    - Medication dosages within safe limits
+    - Protocol documentation completeness
+    - Required ED note sections
     """
     
     # Valid ranges for vitals (adult ED patients)

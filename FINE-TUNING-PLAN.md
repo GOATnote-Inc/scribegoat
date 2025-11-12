@@ -1,26 +1,25 @@
 # Emergency Medicine Fine-Tuning Plan
 
-**Owner**: Brandon Dent, MD (Emergency Medicine)  
-**Goal**: Specialty fine-tuning for ED-specific medical scribe  
-**Status**: Phase 1 (Foundation) - Ready for Phase 2 (Data Collection)
+**Goal**: Specialty fine-tuning for ED clinical documentation  
+**Status**: Phase 1 (Foundation) - Ready for Phase 2 (Data Collection)  
+**Users**: All ED clinicians (physicians, nurses, PAs, NPs, techs, social workers, paramedics)
 
 ---
 
-## Why Emergency Medicine Needs Specialty Fine-Tuning
+## ED-Specialized Documentation
 
-### Generic Medical Scribe ❌
-- Writes generic SOAP notes for any specialty
-- No understanding of ED-specific workflows
-- Misses critical ED rule-outs (MI, PE, stroke, sepsis)
-- Doesn't understand triage urgency
-- No grasp of ED medical-legal requirements
+### Current Limitations
+- Generic SOAP notes for any specialty
+- Missing ED-specific workflows
+- No triage awareness (ESI 1-5)
+- Generic medical terminology
 
-### ED-Specialized Scribe ✅
-- **Time-critical**: Understands 3-minute vs 30-minute patients
-- **High-risk rule-outs**: Always documents MI, PE, stroke, sepsis considerations
-- **Triage-aware**: ESI 1 (resuscitation) vs ESI 5 (non-urgent) documentation
-- **Medical-legal**: Discharge instructions, return precautions, shared decision-making
-- **Protocol-aware**: ACLS, ATLS, sepsis, stroke protocols with correct steps
+### ED Specialization Goals
+- **Time-critical**: 3-minute vs 30-minute patient documentation
+- **High-risk rule-outs**: MI, PE, stroke, sepsis considerations
+- **Triage-aware**: ESI-appropriate documentation depth
+- **Clinical standards**: Discharge instructions, return precautions
+- **Protocol-aware**: ACLS, ATLS, sepsis, stroke protocols
 - **ED terminology**: "ED course", "disposition", "medical decision making"
 
 ---
@@ -186,21 +185,21 @@ logging_steps: 10
 4. **BERTScore** (semantic similarity)
    - Target: >0.85
 
-#### Clinical Evaluation (Brandon Dent, MD)
-1. **Medical Decision Making Quality**
+#### Clinical Evaluation
+1. **Clinical Accuracy**
    - Differential diagnosis comprehensive?
    - Risk stratification appropriate?
    - Disposition reasoning sound?
 
-2. **ED-Specific Standards**
+2. **ED Standards**
    - High-risk rule-outs documented?
    - Return precautions appropriate?
-   - Medical-legal requirements met?
+   - Clinical documentation requirements met?
 
 3. **Usability**
-   - Would you trust this note in your ED?
-   - Does it save time vs manual documentation?
-   - Would you show this to NVIDIA for director role?
+   - Reduces documentation burden?
+   - Saves time vs manual entry?
+   - Supports all ED team members?
 
 ---
 
@@ -268,50 +267,44 @@ logging_steps: 10
 
 ---
 
-## Why This Matters for NVIDIA Director Role
+## Technical Implementation
 
-### Technical Excellence
-- ✅ **H100 Optimization**: LoRA fine-tuning with FlashAttention-3, BF16 precision
-- ✅ **NVIDIA Stack**: NeMo, NIM, Triton, MONAI
-- ✅ **Production-Ready**: Guardrails, monitoring, HIPAA compliance
+### H100 Optimization
+- ✅ LoRA fine-tuning with FlashAttention-3, BF16 precision
+- ✅ NVIDIA Stack: NeMo, NIM, Triton, MONAI
+- ✅ Production-Ready: Guardrails, monitoring, HIPAA compliance
 
-### Healthcare AI Expertise
-- ✅ **Clinical Validation**: Built by ED physician, for ED physicians
-- ✅ **Safety-First**: Medical-legal guardrails, not just accuracy
-- ✅ **Real-World Impact**: Solves actual ED documentation burden
+### Clinical Value
+- ✅ Safety-First: Clinical validation guardrails
+- ✅ Real-World Impact: Reduces ED documentation burden
+- ✅ Team-Focused: Supports all ED clinicians
 
-### Leadership & Vision
-- ✅ **Specialty-Specific**: Not generic, but tailored to high-stakes specialty
-- ✅ **Scalable**: LoRA adapters → multi-specialty (EM, cards, neuro, etc.)
-- ✅ **Open Source**: Democratizes healthcare AI for all specialties
-
----
-
-## Questions for Brandon Dent, MD
-
-1. **Data Source**: Which path for training data?
-   - Option A: Your de-identified clinical notes (faster, higher quality)
-   - Option B: MIMIC-IV-ED (public, takes longer to access)
-   - Option C: Synthetic + validation (can start immediately)
-
-2. **Chief Complaints Priority**: Which CC should we prioritize?
-   - High-volume: Chest pain, abdominal pain, headache
-   - High-stakes: Trauma, stroke, STEMI, sepsis
-   - Both?
-
-3. **Evaluation Standards**: What's your bar for "good enough to use in ED"?
-   - 90% accuracy?
-   - 95% accuracy?
-   - 100% safety (no guardrail violations)?
-
-4. **Timeline**: When do you need this for NVIDIA director application?
-   - 1 month? (rush, may sacrifice quality)
-   - 3 months? (optimal, full fine-tuning + validation)
-   - 6 months? (research-grade, publish paper)
+### Scalability
+- ✅ Specialty-Specific: Tailored for high-stakes ED environment
+- ✅ LoRA Adapters: Extensible to other specialties
+- ✅ Open Source: Accessible to all healthcare organizations
 
 ---
 
-**Author**: Brandon Dent, MD - Emergency Medicine  
+## Next Steps
+
+### Data Collection
+- MIMIC-IV-ED public dataset (PhysioNet)
+- De-identified clinical documentation
+- Synthetic case generation with validation
+
+### Training Priorities
+- High-volume chief complaints (chest pain, abdominal pain, headache)
+- High-stakes protocols (trauma, stroke, STEMI, sepsis)
+- ESI triage levels (1-5)
+
+### Evaluation Criteria
+- Clinical accuracy: >95%
+- Safety: 100% guardrail compliance
+- Usability: Time savings vs manual documentation
+
+---
+
 **Contact**: b@thegoatnote.com  
 **Repository**: https://github.com/GOATnote/scribegoat
 

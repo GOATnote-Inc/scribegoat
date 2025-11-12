@@ -151,7 +151,7 @@ class GOATScribe:
         user_content = f"/think\n{prompt}" if self.config.enable_reasoning else prompt
         
         # ED-specific system prompt
-        ed_system_prompt = """Expert Emergency Medicine scribe. Generate comprehensive ED note with:
+        ed_system_prompt = """Emergency Medicine clinical documentation. Generate comprehensive ED note with:
 
 Structure:
 - Chief Complaint
@@ -180,8 +180,8 @@ Critical: Document time-sensitive decisions, rule-outs for high-risk conditions,
         return response.choices[0].message.content
     
     def _critique_draft(self, draft: str) -> str:
-        """Self-critique pass for Emergency Medicine accuracy"""
-        critique_prompt = f"""Emergency Medicine QA Review. Verify this ED note for:
+        """Self-critique pass for clinical accuracy"""
+        critique_prompt = f"""Clinical documentation review. Verify this ED note for:
 
 1. Medical Accuracy: Check vitals, medications, procedures
 2. Completeness: All required ED sections present
@@ -199,7 +199,7 @@ Provide improved version with any corrections:"""
             messages=[
                 {
                     "role": "system",
-                    "content": "Emergency Medicine attending physician. Expert in ED documentation and medical-legal risk."
+                    "content": "Clinical documentation reviewer. Expert in ED workflows and medical-legal standards."
                 },
                 {"role": "user", "content": critique_prompt}
             ],

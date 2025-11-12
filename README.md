@@ -7,25 +7,19 @@
 
 **Production-ready Emergency Medicine scribe with built-in safety guardrails.**
 
-Built by **Brandon Dent, MD** (Former Emergency Medicine Clinical Assistant Professor)  
-Specialized for high-volume, time-critical ED documentation with medical-legal safety.
+Designed for ED clinicians: physicians, nurses, PAs, NPs, techs, social workers, and paramedics.
 
 ---
 
-## Why Emergency Medicine-Specific?
+## Features Built for ED Teams
 
-**Generic medical scribes miss critical ED requirements:**
-- ❌ No understanding of ED-specific workflows
-- ❌ Missing high-risk rule-outs (MI, PE, stroke, sepsis)
-- ❌ No medical-legal safety checks
-- ❌ Generic SOAP notes (not ED documentation standards)
-
-**GOAT Scribe is built by ED physician for ED physicians:**
-- ✅ **Safety guardrails**: Validates vitals, medications, protocols
+**Safety guardrails** for high-stakes clinical documentation:
+- ✅ **Vital signs validation**: HR, BP, RR, Temp, SpO2, GCS within valid ranges
+- ✅ **Medication limits**: 11 common ED medications with max safe doses
+- ✅ **Protocol warnings**: ACLS, ATLS, sepsis, stroke, STEMI protocols
 - ✅ **ED documentation structure**: 12-section format with Medical Decision Making
 - ✅ **High-risk awareness**: Prompts for critical rule-outs
 - ✅ **Medical-legal compliance**: Return precautions, informed consent
-- ✅ **Clinical expertise**: Not just AI engineer, actual ED attending
 
 ---
 
