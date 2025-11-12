@@ -14,9 +14,10 @@ class ScribeConfig:
     nim_api_key: Optional[str] = None
     
     # Model Configuration (November 2025)
-    model_name: str = "nvidia/nemotron-nano-3-moe"  # October 2025: Hybrid MoE, faster reasoning
+    model_name: str = "nvidia/nemotron-nano-9b-v2"  # October 2025: 6x throughput, 128K context, toggleable reasoning
     temperature: float = 0.1
     max_tokens: int = 512  # Increased for detailed SOAP notes
+    enable_reasoning: bool = True  # Use /think for transparent reasoning in audit trails
     
     # PHI Detection
     phi_language: str = "en"

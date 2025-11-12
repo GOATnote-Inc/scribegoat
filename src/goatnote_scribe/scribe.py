@@ -1,8 +1,11 @@
 """
 GOAT Scribe: H100-optimized HIPAA-compliant medical note generation
 
-Uses NVIDIA Nemotron Nano 3 (October 2025) with hybrid Mixture-of-Experts 
-architecture for enhanced reasoning throughput in clinical documentation.
+Uses NVIDIA Nemotron Nano 9B v2 (October 2025):
+- 6x higher throughput for real-time clinical use
+- 128K context for comprehensive medical records
+- Toggleable reasoning (/think) for audit trail transparency
+- Hybrid Mamba-Transformer architecture
 """
 
 import gc
@@ -116,6 +119,9 @@ class GOATScribe:
     
     def _generate_draft(self, prompt: str) -> str:
         """Generate initial SOAP note draft"""
+        # Add /think token for transparent reasoning (HIPAA audit trail)
+        user_content = f"/think\n{prompt}" if self.config.enable_reasoning else prompt
+        
         response = self.client.chat.completions.create(
             model=self.config.model_name,
             messages=[
@@ -123,7 +129,7 @@ class GOATScribe:
                     "role": "system",
                     "content": "Expert medical scribe. Generate concise SOAP note."
                 },
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": user_content}
             ],
             temperature=self.config.temperature,
             max_tokens=self.config.max_tokens
