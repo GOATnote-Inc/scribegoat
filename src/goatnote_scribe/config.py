@@ -14,7 +14,7 @@ class ScribeConfig:
     nim_api_key: Optional[str] = None
     
     # Model Configuration (November 2025)
-    model_name: str = "nvidia/nemotron-nano-9b-v2"  # October 2025: 6x throughput, 128K context, toggleable reasoning
+    model_name: str = "nvidia/llama-3.1-nemotron-nano-8b-v1"  # Publicly accessible Nemotron model
     temperature: float = 0.1
     max_tokens: int = 512  # Increased for detailed SOAP notes
     enable_reasoning: bool = True  # Use /think for transparent reasoning in audit trails
@@ -51,13 +51,6 @@ class ScribeConfig:
                 "Medical Decision Making",
                 "Disposition"
             ]
-    
-    # FHIR Configuration
-    gcp_project_id: str = "scribe-fhir"
-    gcp_location: str = "us-central1"
-    gcp_dataset: str = "scribe-dataset"
-    gcp_fhir_store: str = "scribe-store"
-    
         
         # Load API key
         if self.nim_api_key is None:
@@ -67,6 +60,12 @@ class ScribeConfig:
                     "NGC_API_KEY must be set via environment variable or config. "
                     "Get your key from: https://org.ngc.nvidia.com/setup/api-key"
                 )
+    
+    # FHIR Configuration
+    gcp_project_id: str = "scribe-fhir"
+    gcp_location: str = "us-central1"
+    gcp_dataset: str = "scribe-dataset"
+    gcp_fhir_store: str = "scribe-store"
     
     @classmethod
     def from_env(cls) -> "ScribeConfig":

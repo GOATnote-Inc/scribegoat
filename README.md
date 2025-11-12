@@ -7,7 +7,24 @@
 
 **Production-ready Emergency Medicine scribe with built-in safety guardrails.**
 
-Designed for ED teams.
+Designed for ED teams and NVIDIA healthcare AI startups that need a curated, bleeding-edge reference stack.
+
+---
+
+## NVIDIA Healthcare AI Showcase · November 2025
+
+This repository now doubles as a living showcase of NVIDIA’s latest open healthcare AI tooling. The H100 playbook demonstrated here spans clinical text, imaging, multimodal, and deployment workflows:
+
+- **CUDA 13.0 Update 2** with driver `580.105.08` (Blackwell-ready) and Nsight Compute/Systems 2025.4.
+- **CUTLASS 4.3.0** kernels + FlashAttention 3.0.1 for high-throughput Hopper compute.
+- **NVIDIA Nemotron Nano / Super Models** served through NIM (text-only `llama‑3.1‑nemotron‑nano‑8b‑v1` + VL `llama‑3.1‑nemotron‑nano‑vl‑8b‑v1` examples).
+- **NVIDIA NeMo 25.09.1** + ModelOpt 0.21 for speech/Large Language Model fine-tuning.
+- **MONAI 1.5.1 (weekly)** pipelines for medical imaging triage and FHIR export glue.
+- **Clara Holoscan 3.0.1** operators for edge inference + DALI (`cuda130`) preprocessing.
+- **TensorRT‑LLM 0.17.1 & Triton 3.2.1** for low-latency deployment.
+- **Presidio 2.2.360** + GOATnote guardrails for HIPAA compliance.
+
+> 📁 See `docs/NVIDIA-Healthcare-AI-Showcase.md` for setup commands, architecture diagrams, and links to each toolkit.
 
 ---
 
@@ -170,7 +187,7 @@ NGC_API_KEY=nvapi-YOUR-KEY-HERE
 
 # Optional (defaults shown)
 NIM_URL=https://integrate.api.nvidia.com/v1
-MODEL_NAME=nvidia/nemotron-nano-9b-v2
+MODEL_NAME=nvidia/llama-3.1-nemotron-nano-8b-v1
 TEMPERATURE=0.1
 MAX_TOKENS=512
 
@@ -311,6 +328,10 @@ finally:
 ```bash
 # Install dev dependencies
 pip install -e ".[dev]"
+
+# Optional: NVIDIA healthcare add-ons (requires https://pypi.nvidia.com)
+pip install --upgrade -r requirements-nvidia-healthcare.txt \
+    --extra-index-url https://pypi.nvidia.com
 
 # Run tests
 pytest

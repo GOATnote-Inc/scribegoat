@@ -1,0 +1,39 @@
+# NVIDIA Healthcare AI add-ons (Nov 2025)
+# Install with:
+#   pip install --upgrade -r requirements-nvidia-healthcare.txt \
+#       --extra-index-url https://pypi.nvidia.com
+
+# Core deep learning (nightly builds)
+torch==2.8.1.dev20251110+cu130
+torchvision==0.20.1.dev20251110+cu130
+torchaudio==2.5.1.dev20251110+cu130
+
+# NVIDIA medical & deployment stack
+monai-weekly>=1.5.1.dev0
+nvidia-clara-holoscan==3.0.1
+nvidia-dali-cuda130==1.43.0
+nvidia-nvimgcodec-cu13==0.4.1
+nemo_toolkit[all]==25.09.1
+nvidia-modelopt==0.21.1
+nvidia-pytriton==0.5.1
+tensorrt_llm==0.17.1
+triton==3.2.1
+flash-attn==3.0.1
+xformers==0.0.29
+langchain-nvidia-ai-endpoints==0.3.6
+openai==1.56.0
+httpx==0.28.1
+
+# Compliance & FHIR tooling
+presidio-analyzer==2.2.360
+presidio-anonymizer==2.2.360
+spacy==3.8.9
+fhir.resources==7.1.1
+google-auth==2.43.0
+google-cloud-healthcare==2.24.1
+
+# Optional: GPU-aware observability
+jupyterlab==7.0.0
+jupyterlab-nvdashboard==0.11.0
+jupyter-ai==3.2.1
+ipywidgets==8.1.5
