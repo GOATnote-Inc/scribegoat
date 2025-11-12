@@ -173,28 +173,32 @@ class EDGuardrails:
     def _check_medications(self, note: str) -> List[GuardrailViolation]:
         """Check for medication dosage errors"""
         violations = []
-        
+
         for med_name, max_dose in self.MEDICATION_LIMITS.items():
-            # Pattern: medication name followed by dose
-            pattern = rf"{med_name}\s+(\d+\.?\d*)\s*(mg|mcg)?"
-            matches = re.finditer(pattern, note, re.IGNORECASE)
-            
-            for match in matches:
-                dose = float(match.group(1))
-                unit = match.group(2) if match.group(2) else "mg"
-                
-                # Convert mcg to mg for comparison
-                if unit.lower() == "mcg":
-                    dose = dose / 1000
-                
-                if dose > max_dose:
-                    violations.append(GuardrailViolation(
-                        rule=f"medication_{med_name}_dose",
-                        severity="critical",
-                        message=f"{med_name.title()} dose {match.group(1)}{unit} exceeds max safe dose ({max_dose} mg)",
-                        location=match.group(0)
-                    ))
-        
+            # Support "morphine 50mg" and "50 mg morphine" patterns
+            patterns = [
+                rf"{med_name}\s+(\d+\.?\d*)\s*(mg|mcg)?",
+                rf"(\d+\.?\d*)\s*(mg|mcg)?\s+{med_name}"
+            ]
+
+            for pattern in patterns:
+                matches = re.finditer(pattern, note, re.IGNORECASE)
+
+                for match in matches:
+                    dose = float(match.group(1))
+                    unit = match.group(2) if match.group(2) else "mg"
+
+                    if unit.lower() == "mcg":
+                        dose = dose / 1000
+
+                    if dose > max_dose:
+                        violations.append(GuardrailViolation(
+                            rule=f"medication_{med_name}_dose",
+                            severity="critical",
+                            message=f"{med_name.title()} dose {match.group(1)}{unit or 'mg'} exceeds max safe dose ({max_dose} mg)",
+                            location=match.group(0)
+                        ))
+
         return violations
     
     def _check_protocols(self, note: str) -> List[GuardrailViolation]:
