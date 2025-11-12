@@ -2,7 +2,7 @@
 
 **Goal**: Specialty fine-tuning for ED clinical documentation  
 **Status**: Phase 1 (Foundation) - Ready for Phase 2 (Data Collection)  
-**Users**: All ED clinicians (physicians, nurses, PAs, NPs, techs, social workers, paramedics)
+**Users**: ED teams
 
 ---
 
@@ -199,7 +199,7 @@ logging_steps: 10
 3. **Usability**
    - Reduces documentation burden?
    - Saves time vs manual entry?
-   - Supports all ED team members?
+   - Supports ED teams?
 
 ---
 
@@ -277,7 +277,7 @@ logging_steps: 10
 ### Clinical Value
 - ✅ Safety-First: Clinical validation guardrails
 - ✅ Real-World Impact: Reduces ED documentation burden
-- ✅ Team-Focused: Supports all ED clinicians
+- ✅ Team-Focused: Supports ED teams
 
 ### Scalability
 - ✅ Specialty-Specific: Tailored for high-stakes ED environment

@@ -2,7 +2,7 @@
 Emergency Medicine Guardrails for GOAT Scribe
 
 CRITICAL SAFETY LAYER: Prevents medical errors in high-stakes ED environment.
-For all ED clinicians: physicians, nurses, PAs, NPs, techs, social workers, paramedics.
+For ED teams.
 
 Author: Brandon Dent
 """

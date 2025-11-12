@@ -1,8 +1,7 @@
 """
 GOAT Scribe: H100-optimized HIPAA-compliant Emergency Medicine scribe
 
-For ED clinicians: physicians, nurses, PAs, NPs, techs, social workers, paramedics.
-Safety-first design for high-stakes ED documentation.
+For ED teams. Safety-first design for high-stakes clinical documentation.
 """
 
 __version__ = "1.0.0"

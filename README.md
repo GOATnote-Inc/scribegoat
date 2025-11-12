@@ -7,7 +7,7 @@
 
 **Production-ready Emergency Medicine scribe with built-in safety guardrails.**
 
-Designed for ED clinicians: physicians, nurses, PAs, NPs, techs, social workers, and paramedics.
+Designed for ED teams.
 
 ---
 
