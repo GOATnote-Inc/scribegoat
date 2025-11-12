@@ -118,6 +118,14 @@ export NGC_API_KEY="nvapi-YOUR-KEY-HERE"
 
 **Profiling guide**: [`deploy/PROFILE.md`](deploy/PROFILE.md)
 
+### Latest Nsight Dataset (Nov 12 2025)
+- Report: `docs/benchmarks/ncu/latest/ncu_monai_opt_latest.ncu-rep` (MONAI UNet, `torch.compile`, AMP)
+- Summary CSV + plots: `docs/benchmarks/ncu/latest/`
+- Top kernels: `vol2col`/`vol2im` account for ~58% of GPU time; CUTLASS GEMM/GEMV kernels peak around 53% SM occupancy.
+- Full-metric replay inflates wall-clock time; for quick spot checks run `sudo ncu --set roofline -c 1`.
+- Recreate sanitized artefacts with `python scripts/process_ncu_report.py --raw /tmp/ncu_raw.csv --outdir docs/benchmarks/ncu/<tag>`.
+
+
 ## Usage
 
 ### Web UI (Gradio)

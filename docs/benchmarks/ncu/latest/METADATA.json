@@ -1,0 +1,8 @@
+{
+  "dataset": "GOAT-Scribe-Nsight-HealthcareAI",
+  "hardware": "NVIDIA H100",
+  "cuda_version": "13.0.2",
+  "cutlass_version": "4.3.0",
+  "monai_version": "1.5.1",
+  "purpose": "Open-source profiling data for clinical AI workloads"
+}

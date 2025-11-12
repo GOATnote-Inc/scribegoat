@@ -27,12 +27,16 @@ The benchmark runs a 3D MONAI UNet forward pass (batch 1, patch 96³) compiled w
 docs/benchmarks/ncu/
 ├── LICENSE                     # Apache 2.0 notice for dataset reuse
 ├── METADATA.json               # Machine-readable provenance fields
-├── monai_h100_summary.csv      # Aggregated kernel metrics (sanitized)
-├── plots/
-│   ├── roofline_tensor_vs_bandwidth.png
-│   ├── sm_occupancy.png
-│   └── warp_stall_breakdown.png
-└── README.md (this file)
+├── README.md                   # Dataset guide (this file)
+├── monai_h100_summary.csv      # Baseline release summary (Nov 10 2025)
+├── plots/                      # Baseline release visualisations
+└── latest/                     # Rolling Nsight drops (Nov 12 2025 run included)
+    ├── ncu_monai_opt_latest.ncu-rep
+    ├── monai_h100_summary.csv
+    └── plots/
+        ├── roofline_tensor_vs_bandwidth.png
+        ├── sm_occupancy.png
+        └── warp_stall_breakdown.png
 ```
 
 ### `monai_h100_summary.csv`
@@ -46,6 +50,8 @@ The CSV aggregates 56 kernels seen across Nsight’s replay passes. For each ker
 - `stall_*_ratio` columns – average warp stall reasons reported by Nsight (`ratio = stall warps / issued warps`).
 
 Identifying information (hostnames, PIDs, filesystem paths) is stripped; only kernel symbol strings shipped with NVIDIA libraries remain.
+
+The Nov 12 2025 refresh in `latest/monai_h100_summary.csv` uses the same schema and is generated from `ncu_monai_opt_latest.ncu-rep` (torch.compile + AMP).
 
 ### Key Takeaways
 
@@ -69,6 +75,7 @@ The plots in `plots/` visualise these trends:
    sudo /usr/local/cuda-13.0/bin/ncu --target-processes all \
         --set full --export ncu_monai_opt --force-overwrite \
         python scripts/monai_h100_benchmark.py --mode optimized --runs 10 --warmup 3 --patch-size 96
+   # For quicker sanity sweeps, append `--set roofline -c 1` to the ncu command
    ```
    (Run Nsight as root or relax GPU counter permissions per [ERR_NVGPUCTRPERM](https://developer.nvidia.com/ERR_NVGPUCTRPERM)).
 
