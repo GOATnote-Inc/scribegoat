@@ -1,22 +1,55 @@
-# GOAT Scribe: H100-Optimized HIPAA-Compliant Medical Scribe
+# GOAT Scribe: Emergency Medicine Edition
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![NVIDIA](https://img.shields.io/badge/NVIDIA-Nemotron%20Nano%209B%20v2-76B900)](https://developer.nvidia.com/)
+[![Specialty](https://img.shields.io/badge/Specialty-Emergency%20Medicine-red)](https://github.com/GOATnote-Inc/scribegoat)
 
-Production-ready medical scribe using NVIDIA Nemotron Nano 9B v2 for real-time SOAP note generation with HIPAA-compliant PHI detection.
+**Production-ready Emergency Medicine scribe with built-in safety guardrails.**
+
+Built by **Brandon Dent, MD** (Former Emergency Medicine Clinical Assistant Professor)  
+Specialized for high-volume, time-critical ED documentation with medical-legal safety.
+
+---
+
+## Why Emergency Medicine-Specific?
+
+**Generic medical scribes miss critical ED requirements:**
+- ❌ No understanding of ED-specific workflows
+- ❌ Missing high-risk rule-outs (MI, PE, stroke, sepsis)
+- ❌ No medical-legal safety checks
+- ❌ Generic SOAP notes (not ED documentation standards)
+
+**GOAT Scribe is built by ED physician for ED physicians:**
+- ✅ **Safety guardrails**: Validates vitals, medications, protocols
+- ✅ **ED documentation structure**: 12-section format with Medical Decision Making
+- ✅ **High-risk awareness**: Prompts for critical rule-outs
+- ✅ **Medical-legal compliance**: Return precautions, informed consent
+- ✅ **Clinical expertise**: Not just AI engineer, actual ED attending
 
 ---
 
 ## Features
 
+### Emergency Medicine Safety (CRITICAL)
+
+**Built-in Guardrails** (cannot be disabled in production):
+- ✅ **Vital Signs Validation**: HR, BP, RR, Temp, SpO2, GCS within valid ranges
+- ✅ **Medication Limits**: 11 common ED medications with max safe doses
+- ✅ **Protocol Warnings**: ACLS, ATLS, sepsis, stroke, STEMI protocols
+- ✅ **ED Note Structure**: All 12 required sections enforced
+
+**Example**: Catches `"HR 350 BPM"` → ⚠️ Critical violation (valid range: 20-250)  
+**Example**: Catches `"Morphine 50mg IV"` → ⚠️ Exceeds max safe dose (15mg)
+
 ### Core Capabilities
 - **Real-Time Generation**: 6x higher throughput vs comparable models
 - **HIPAA Compliance**: Microsoft Presidio for 18-identifier PHI detection
 - **Audit Transparency**: Toggleable reasoning trails via `/think` token
-- **Extended Context**: 128K tokens for comprehensive medical encounters
+- **Extended Context**: 128K tokens for comprehensive ED encounters
 - **FHIR R4**: Standards-compliant healthcare interoperability
 - **Zero-Residue Cleanup**: GPU memory wiping for data security
+- **MONAI Integration**: Healthcare AI framework standard (v1.5.1)
 
 ### Technical Stack
 - **Model**: NVIDIA Nemotron Nano 9B v2 (October 2025)
@@ -64,8 +97,10 @@ result = scribe(
            "Vitals: BP 128/82, HR 92, RR 18, SpO2 96% RA."
 )
 
-print(result['note'])               # Generated SOAP note
+print(result['note'])               # Complete ED note (12 sections)
 print(result['phi_removed'])        # Number of PHI entities detected
+print(result['guardrail_safe'])     # True/False - any critical violations?
+print(result['guardrail_report'])   # Detailed safety validation report
 print(result['fhir_bundle'])        # FHIR R4 bundle
 
 # Clean up (important for HIPAA)
