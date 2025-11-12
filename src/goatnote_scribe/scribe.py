@@ -1,4 +1,9 @@
-"""GOAT Scribe: H100-optimized HIPAA-compliant medical note generation"""
+"""
+GOAT Scribe: H100-optimized HIPAA-compliant medical note generation
+
+Uses NVIDIA Nemotron Nano 3 (October 2025) with hybrid Mixture-of-Experts 
+architecture for enhanced reasoning throughput in clinical documentation.
+"""
 
 import gc
 from typing import Dict, List, Optional, Tuple

@@ -13,10 +13,10 @@ class ScribeConfig:
     nim_url: str = "https://integrate.api.nvidia.com/v1"
     nim_api_key: Optional[str] = None
     
-    # Model Configuration
-    model_name: str = "nvidia/llama-3.3-nemotron-super-49b-v1.5"
+    # Model Configuration (November 2025)
+    model_name: str = "nvidia/nemotron-nano-3-moe"  # October 2025: Hybrid MoE, faster reasoning
     temperature: float = 0.1
-    max_tokens: int = 384
+    max_tokens: int = 512  # Increased for detailed SOAP notes
     
     # PHI Detection
     phi_language: str = "en"
